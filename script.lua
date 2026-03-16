@@ -17,16 +17,16 @@ local LocalPlayer = Players.LocalPlayer
 local CONFIG = {
 
     Names = {
-        MainGui    = "KeeK duel",
-        HudGui     = "keekhud_v5",
-        DuelGui    = "DuelUI_v5",
-        MainFrame  = "MainFrame",
-        HudFrame   = "HudFrame",
-        DuelFrame  = "DuelFrame",
-        OpenButton = "OpenButton",
-        TabBar     = "TabBar",
-        Content    = "ContentFrame",
-    },
+    MainGui = "KeekDuel",
+    HudGui = "KeekDuelHUD",
+    DuelGui = "KeekDuelUI",
+    MainFrame = "MainFrame",
+    HudFrame = "HudFrame",
+    DuelFrame = "DuelFrame",
+    OpenButton = "OpenButton",
+    TabBar = "TabBar",
+    Content = "ContentFrame",
+    }
 
     Colors = {
         Gold          = Color3.new(1, 0.866667, 0),
@@ -54,7 +54,7 @@ local CONFIG = {
     },
 
     Positions = {
-        MainFrame  = UDim2.new(0.5, -130, 0.5, -165),
+        MainFrame = UDim2.new(0.5, 0, 0.5, 0),
         HudFrame   = UDim2.new(0.5, -90, 0, 5),
         DuelFrame  = UDim2.new(0.5, -100, 0.28, 0),
         OpenButton = UDim2.new(0.01, 0, 0.18, 0),
