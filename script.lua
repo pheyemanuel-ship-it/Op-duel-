@@ -1,265 +1,248 @@
--- [[ Owned by Gorrexxsz ]] --
+repeat task.wait() until game:IsLoaded()
 
--- // [1] SERVICES //
-
-local Players          = game:GetService("Players")
-local CoreGui          = game:GetService("CoreGui")
+-- ================= SERVICES =================
+local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local RunService       = game:GetService("RunService")
-local TweenService     = game:GetService("TweenService")
-local Stats            = game:GetService("Stats")
-local StarterGui       = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Player = Players.LocalPlayer
 
-local LocalPlayer = Players.LocalPlayer
-
--- // [2] CONFIGURATION //
-
-local CONFIG = {
-
-    Names = {
-    MainGui = "KeekDuel",
-    HudGui = "KeekDuelHUD",
-    DuelGui = "KeekDuelUI",
-    MainFrame = "MainFrame",
-    HudFrame = "HudFrame",
-    DuelFrame = "DuelFrame",
-    OpenButton = "OpenButton",
-    TabBar = "TabBar",
-    Content = "ContentFrame",
-    }
-
-    Colors = {
-        Gold          = Color3.new(1, 0.866667, 0),
-        GoldDim       = Color3.fromRGB(180, 170, 100),
-        Background    = Color3.new(1, 1, 1),
-        FrameDark     = Color3.new(0.0392157, 0.0392157, 0.0392157),
-        FrameMid      = Color3.new(0.0588235, 0.0588235, 0.0784314),
-        FrameLight    = Color3.new(0.117647, 0.117647, 0.117647),
-        ButtonDark    = Color3.new(0.0980392, 0.0980392, 0.0980392),
-        ButtonOff     = Color3.new(0.0980392, 0.0980392, 0.0980392),
-        ButtonOn      = Color3.new(1, 0.866667, 0),
-        ButtonOnText  = Color3.new(0, 0, 0),
-        ButtonOffText = Color3.new(0.470588, 0.431373, 0.235294),
-        White         = Color3.new(1, 1, 1),
-        Divider       = Color3.new(1, 1, 1),
-        SliderTrack   = Color3.new(0.117647, 0.117647, 0.117647),
-        SliderFill    = Color3.new(1, 0.866667, 0),
-        PlotZone      = Color3.new(0, 0, 0),
-    },
-  Sizes = {
-        MainFrame  = UDim2.new(0, 260, 0, 330),
-        HudFrame   = UDim2.new(0, 180, 0, 52),
-        DuelFrame  = UDim2.new(0, 200, 0, 135),
-        OpenButton = UDim2.new(0, 48, 0, 48),
-    },
-
-    Positions = {
-        MainFrame = UDim2.new(0.5, 0, 0.5, 0),
-        HudFrame   = UDim2.new(0.5, -90, 0, 5),
-        DuelFrame  = UDim2.new(0.5, -100, 0.28, 0),
-        OpenButton = UDim2.new(0.01, 0, 0.18, 0),
-    },
-
-    Fonts = {
-        Title  = Enum.Font.GothamBlack,
-        Body   = Enum.Font.Gotham,
-        Bold   = Enum.Font.GothamBold,
-    },
-
-    Keys = {
-        ToggleGui  = Enum.KeyCode.U,
-        BatLock    = Enum.KeyCode.X,
-        Speed      = Enum.KeyCode.V,
-        InfJump    = Enum.KeyCode.J,
-        Fling      = Enum.KeyCode.F,
-        AutoDuel   = Enum.KeyCode.G,
-    },
-
-  Defaults = {
-        HeliSpeed   = 10,
-        BatLockSpeed= 55,
-        GrabRadius  = 7,
-        FOV         = 70,
-    },
-
-    Tabs = {"Combat", "Protect", "Visual", "Settings"},
-
-    CombatToggles = {
-        { label = "Bat Lock UI",          default = false },
-        { label = "Fling",                default = false },
-        { label = "Float",                default = false },
-        { label = "Speed Custom",         default = false },
-        { label = "Inf Jump",             default = false },
-        { label = "Auto Duel",            default = false },
-        { label = "Auto R / L",           default = false },
-        { label = "Auto Grab",            default = false },
-        { label = "Auto Correct Lag",     default = false },
-        { label = "Anti-Ragdoll",         default = false },
-        { label = "Visual Player",        default = true  },
-        { label = "Auto disable on plot", default = false },
-    },
-
-  ProtectToggles = {
-        { label = "Anti Effect",  default = false },
-        { label = "Xray Base",   default = false },
-        { label = "Unwalk",       default = false },
-        { label = "Player ESP",   default = false },
-    },
-
-    VisualToggles = {
-        { label = "Helicopter", default = false, hasSlider = true },
-    },
-
+-- ================= THEME =================
+local THEME = {
+    bg = Color3.fromRGB(22,22,22),
+    header = Color3.fromRGB(28,28,28),
+    row = Color3.fromRGB(30,30,30),
+    toggleOff = Color3.fromRGB(60,60,60),
+    toggleBall = Color3.fromRGB(150,150,150),
+    text = Color3.fromRGB(210,210,210),
+    primary = Color3.fromRGB(50,50,50),
+    secondary = Color3.fromRGB(80,80,80),
+    accent = Color3.fromRGB(255,180,0)
 }
--- // [3] OBJECT REFERENCES //
 
-local MainGui    = nil
-local HudGui     = nil
-local DuelGui    = nil
+-- ================= ENABLED FEATURES =================
+local Enabled = {
+    Life = false,
+    Right = false,
+    Aimbot = false,
+    SpeedBoost = false,
+    AutoSteal = false,
+    JumpBoost = false,
+    SpinBot = false,
+    AntiRagdoll = false,
+    Unwalk = false,
+    ESP = true,
+    ExtraSpeed = false,
+}
 
--- Main window
-local MainFrame  = nil
-local OpenButton = nil
-local TitleBar   = nil
-local CloseBtn   = nil
-local TabBar     = nil
-local ContentFrame = nil
+-- ================= VALUES =================
+local Values = {
+    BoostSpeed = 30.6,
+    ExtraSpeedValue = 57.5,
+    JumpPower = 28,
+    AimbotSpeed = 56,
+    AimbotRadius = 120,
+    SpinSpeed = 10,
+    HitboxSize = 8,
 
--- HUD elements
-local HudFrame      = nil
-local HudTitle      = nil
-local HudDivider    = nil
-local HudStatsLabel = nil
-local HudPlatLabel  = nil
-local HudProgressOuter = nil
-local HudProgressFill  = nil
-local HudProgressThumb = nil
-local HudSpeedBox   = nil
+    L1 = Vector3.new(-475.58,-5.40,93.80),
+    L2 = Vector3.new(-484.15,-4.42,95.80),
+    R1 = Vector3.new(-475.16,-6.52,27.70),
+    R2 = Vector3.new(-484.04,-5.09,25.15)
+}
 
--- Duel window
-local DuelFrame     = nil
-local DuelTitleBar  = nil
-local DuelContent   = nil
-local DuelAutoRBtn  = nil
-local DuelAutoLBtn  = nil
-local DuelStopBtn   = nil
-local DuelStatusLbl = nil
+-- ================= PLAYER =================
+local HRP
+local Humanoid
 
--- Stroke gradient on HUD
-local HudStrokeGradient = nil
-
--- Runtime state
-
-local CurrentTab      = "Combat"
-local TabButtons      = {}
-local ScrollFrames    = {}
-local ToggleStates    = {}
-local BoundKeys       = {}
-
-local HeliSpeed       = CONFIG.Defaults.HeliSpeed
-local BatLockSpeed    = CONFIG.Defaults.BatLockSpeed
-local GrabRadius      = CONFIG.Defaults.GrabRadius
-local CurrentFOV      = CONFIG.Defaults.FOV
-
-local GradientAngle   = 0
-
-local PlotZonePart    = nil
-local PlotZoneBox     = nil
-
--- // [4] UTILITY FUNCTIONS //
-
-local function getHRP()
-    local char = LocalPlayer.Character
-    if not char then return nil end
-
-    return char:FindFirstChild("HumanoidRootPart")
-        or char:FindFirstChild("UpperTorso")
+local function updateCharacter()
+    local char = Player.Character
+    if char then
+        HRP = char:FindFirstChild("HumanoidRootPart")
+        Humanoid = char:FindFirstChildOfClass("Humanoid")
+    end
 end
 
-local function getHumanoid()
-    local char = LocalPlayer.Character
-    if not char then return nil end
-    return char:FindFirstChildOfClass("Humanoid")
-end
+updateCharacter()
+Player.CharacterAdded:Connect(updateCharacter)
 
-local function getCamera()
-    return workspace.CurrentCamera
-end
--- Smooth tween helper
+-- ================= AIMBOT =================
+local function findNearestEnemy()
+    if not HRP then return end
 
-local function tween(obj, props, duration, style, direction)
+    local nearest
+    local dist = math.huge
 
-    style     = style or Enum.EasingStyle.Quad
-    direction = direction or Enum.EasingDirection.Out
-
-    local info = TweenInfo.new(duration or 0.3, style, direction)
-
-    return TweenService:Create(obj, info, props)
-end
--- Inf Jump
-
-local function startInfJump()
-
-    UserInputService.JumpRequest:Connect(function()
-
-        if not ToggleStates["Combat_5"] then return end
-
-        local hrp = getHRP()
-
-        if hrp then
-            hrp.AssemblyLinearVelocity = Vector3.new(
-                hrp.AssemblyLinearVelocity.X,
-                50,
-                hrp.AssemblyLinearVelocity.Z
-            )
+    for _,p in ipairs(Players:GetPlayers()) do
+        if p ~= Player and p.Character then
+            local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                local d = (hrp.Position - HRP.Position).Magnitude
+                if d < dist and d < Values.AimbotRadius then
+                    dist = d
+                    nearest = hrp
+                end
+            end
         end
-    end)
-
-end
--- Godmode
-
-local function startGodmode()
-
-    RunService.Heartbeat:Connect(function()
-
-        local hum = getHumanoid()
-
-        if hum and hum.MaxHealth > 0 then
-            hum.MaxHealth = math.huge
-            hum.Health    = math.huge
-        end
-
-    end)
-
-end
--- // [7] INITIALIZATION //
-
-local function init()
-
-    createHUD()
-    createMainGUI()
-    createDuelUI()
-    createPlotZone()
-
-    connectMainButtons()
-    connectDuelButtons()
-    connectKeybinds()
-    connectDestroyCleanup()
-
-    startHUDGradientSpin()
-    startHUDStats()
-    startInfJump()
-    startGodmode()
-
-    switchTab("Combat")
-
-    LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
-
-    if LocalPlayer.Character then
-        onCharacterAdded(LocalPlayer.Character)
     end
 
-    print("KeeK Duel Loaded!")
+    return nearest
 end
 
-init()
+RunService.Heartbeat:Connect(function()
+    if Enabled.Aimbot and HRP then
+        local target = findNearestEnemy()
+        if target then
+            local dir = (target.Position - HRP.Position).Unit
+            HRP.AssemblyLinearVelocity = dir * Values.AimbotSpeed
+        end
+    end
+end)
+
+-- ================= SPEED BOOST =================
+RunService.Heartbeat:Connect(function()
+
+    if Enabled.SpeedBoost and HRP and Humanoid then
+        local moveDir = Humanoid.MoveDirection
+
+        if moveDir.Magnitude > 0 then
+            HRP.AssemblyLinearVelocity =
+                Vector3.new(
+                    moveDir.X * Values.BoostSpeed,
+                    HRP.AssemblyLinearVelocity.Y,
+                    moveDir.Z * Values.BoostSpeed
+                )
+        end
+    end
+
+end)
+
+-- ================= SPIN BOT =================
+local spin
+
+local function startSpin()
+
+    if not HRP then return end
+
+    spin = Instance.new("BodyAngularVelocity")
+    spin.MaxTorque = Vector3.new(0,math.huge,0)
+    spin.AngularVelocity = Vector3.new(0,Values.SpinSpeed,0)
+    spin.Parent = HRP
+
+end
+
+local function stopSpin()
+
+    if spin then
+        spin:Destroy()
+        spin = nil
+    end
+
+end
+
+-- ================= ESP =================
+local function makeESP(plr)
+
+    if plr == Player then return end
+    if not plr.Character then return end
+
+    local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local box = Instance.new("BoxHandleAdornment")
+    box.Size = Vector3.new(4,6,2)
+    box.Color3 = Color3.fromRGB(60,135,255)
+    box.Transparency = 0.6
+    box.AlwaysOnTop = true
+    box.Adornee = hrp
+    box.Parent = plr.Character
+
+end
+
+for _,p in ipairs(Players:GetPlayers()) do
+    if p ~= Player then
+        p.CharacterAdded:Connect(function()
+            task.wait(1)
+            if Enabled.ESP then
+                makeESP(p)
+            end
+        end)
+    end
+end
+
+-- ================= GUI =================
+local gui = Instance.new("ScreenGui")
+gui.Name = "KeekDuelHub"
+gui.ResetOnSpawn = false
+gui.Parent = Player:WaitForChild("PlayerGui")
+
+-- MAIN FRAME
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0,260,0,300)
+main.Position = UDim2.new(0.5,-130,0.5,-150)
+main.BackgroundColor3 = THEME.bg
+main.Active = true
+main.Draggable = true
+main.Parent = gui
+
+Instance.new("UICorner",main)
+
+-- TITLE
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,30)
+title.Text = "KEEK DUEL HUB"
+title.BackgroundColor3 = THEME.header
+title.TextColor3 = THEME.accent
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = main
+
+-- ================= BUTTON CREATOR =================
+local function createButton(name,pos,callback)
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,220,0,30)
+    btn.Position = pos
+    btn.Text = name
+    btn.BackgroundColor3 = THEME.row
+    btn.TextColor3 = THEME.text
+    btn.Parent = main
+
+    btn.MouseButton1Click:Connect(callback)
+
+end
+
+-- ================= BUTTONS =================
+createButton("AIMBOT",UDim2.new(0,20,0,50),function()
+    Enabled.Aimbot = not Enabled.Aimbot
+end)
+
+createButton("SPEED BOOST",UDim2.new(0,20,0,90),function()
+    Enabled.SpeedBoost = not Enabled.SpeedBoost
+end)
+
+createButton("SPIN BOT",UDim2.new(0,20,0,130),function()
+
+    Enabled.SpinBot = not Enabled.SpinBot
+
+    if Enabled.SpinBot then
+        startSpin()
+    else
+        stopSpin()
+    end
+
+end)
+
+createButton("STOP ALL",UDim2.new(0,20,0,170),function()
+
+    for k in pairs(Enabled) do
+        Enabled[k] = false
+    end
+
+    stopSpin()
+
+end)
+
+print("✅ Keek Duel Hub Loaded")
