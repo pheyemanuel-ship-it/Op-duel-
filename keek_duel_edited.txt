@@ -8,8 +8,6 @@
 Script Deobfuscated by Cypher Spectre
 Version: DeepSight 
 
-Author:
-@roman666cabj
 
 ========================================
 ]]
