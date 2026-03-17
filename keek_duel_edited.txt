@@ -5,8 +5,6 @@
 ║          Cypher Spectre ║ DeepSight    ║  
 ╚════════════════════════╝
 
-Script Deobfuscated by Cypher Spectre
-Version: DeepSight 
 
 
 ========================================
